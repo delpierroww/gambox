@@ -1,0 +1,96 @@
+body {
+    font-family: 'Rajdhani', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #0f1923;
+    color: #e0e0e0;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 30px;
+}
+
+.login-form, .top-up-form {
+    background-color: #1a2a3a;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,255,255,0.1);
+    margin-bottom: 30px;
+    border: 1px solid #00ffff;
+}
+
+h1, h2 {
+    color: #00ffff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+input[type="text"], input[type="password"], input[type="number"], select {
+    width: 100%;
+    padding: 12px;
+    margin: 15px 0;
+    border: 1px solid #00ffff;
+    border-radius: 5px;
+    background-color: rgba(0,255,255,0.1);
+    color: #e0e0e0;
+}
+
+button {
+    background-color: #00ffff;
+    color: #0f1923;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: #e0e0e0;
+    color: #0f1923;
+    box-shadow: 0 0 10px rgba(0,255,255,0.5);
+}
+
+.balance {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 25px;
+    color: #00ffff;
+}
+
+#top-up-section {
+    display: none;
+}
+
+#game-select {
+    margin-bottom: 15px;
+}
+
+#diamond-amount {
+    margin-bottom: 15px;
+}
+
+/* Additional modern gaming styles */
+.glow-text {
+    text-shadow: 0 0 10px #00ffff;
+}
+
+.neon-border {
+    border: 2px solid #00ffff;
+    box-shadow: 0 0 10px #00ffff, inset 0 0 10px #00ffff;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.pulse-effect {
+    animation: pulse 2s infinite;
+}
+

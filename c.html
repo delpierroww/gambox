@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diamond Nexus - Top Up Gaming Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #00ffff;
+            --secondary-color: #ff00ff;
+            --background-color: #0f0f1a;
+            --card-background: rgba(30, 30, 50, 0.8);
+            --text-color: #e0e0e0;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 0, 255, 0.1) 0%, transparent 20%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .card {
+            background-color: var(--card-background);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0,255,255,0.1);
+            margin-bottom: 30px;
+            border: 1px solid #3a3a5a;
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 30px rgba(0,255,255,0.2);
+        }
+        h1, h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary-color);
+            text-shadow: 0 0 10px rgba(0,255,255,0.5);
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #3a3a5a;
+            border-radius: 5px;
+            background-color: rgba(20, 20, 35, 0.8);
+            color: var(--text-color);
+            font-family: 'Roboto', sans-serif;
+        }
+        button {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: var(--background-color);
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        button:hover {
+            opacity: 0.9;
+            box-shadow: 0 0 15px rgba(0,255,255,0.5);
+        }
+        .balance {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #00ffaa;
+            text-shadow: 0 0 10px rgba(0,255,170,0.5);
+        }
+        .alert {
+            padding: 15px;
+            color: white;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+        }
+        .success {
+            background-color: #00cc66;
+        }
+        .error {
+            background-color: #ff3333;
+        }
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .game-item {
+            background-color: rgba(50, 50, 70, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .game-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0,255,255,0.3);
+        }
+        .game-item img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        #loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 255, 255, 0.1);
+            border-left-color: var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="login-section" class="card">
+            <h1>Masuk ke Diamond Nexus</h1>
+            <input type="text" id="username" placeholder="Nama Pengguna" required>
+            <input type="password" id="password" placeholder="Kata Sandi" required>
+            <button onclick="login()">Masuk ke Dunia Gaming</button>
+        </div>
+
+        <div id="top-up-section" style="display: none;">
+            <h1>Diamond Nexus - Pusat Top Up Gaming</h1>
+            <div class="balance">Saldo: Rp <span id="balance">0</span></div>
+            <div class="alert" id="alert"></div>
+            
+            <div class="card">
+                <h2>Isi Ulang Dompet Gaming</h2>
+                <input type="number" id="add-balance-amount" placeholder="Jumlah Saldo (Rp)" min="10000">
+                <button onclick="addBalance()">Isi Ulang</button>
+            </div>
+            
+            <div class="card">
+                <h2>Beli Diamond Gaming</h2>
+                <select id="platform-select">
+                    <option value="">Pilih Platform</option>
+                    <option value="steam">Steam (PC)</option>
+                    <option value="playstore">PlayStore (Mobile)</option>
+                </select>
+                <div id="game-list" class="game-grid"></div>
+                <div id="purchase-form" style="display: none;">
+                    <h3 id="selected-game"></h3>
+                    <input type="number" id="diamond-amount" placeholder="Jumlah Diamond" min="1">
+                    <p>Harga: Rp <span id="price">0</span></p>
+                    <button onclick="buyDiamond()">Beli Diamond</button>
+                </div>
+            </div>
+            
+            <div id="loading">
+                <div class="spinner"></div>
+                <p>Memproses transaksi...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let balance = 0;
+        const steamGames = [
+            {name: "Counter-Strike: Global Offensive", image: "https://example.com/csgo.jpg"},
+            {name: "Dota 2", image: "https://example.com/dota2.jpg"},
+            {name: "PUBG: BATTLEGROUNDS", image: "https://example.com/pubg.jpg"},
+            // Tambahkan game Steam lainnya hingga mencapai 100 game
+        ];
+        const playstoreGames = [
+            {name: "Mobile Legends: Bang Bang", image: "https://example.com/mlbb.jpg"},
+            {name: "PUBG Mobile", image: "https://example.com/pubgm.jpg"},
+            {name: "Genshin Impact", image: "https://example.com/genshin.jpg"},
+            // Tambahkan game PlayStore lainnya hingga mencapai 100 game
+        ];
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username && password) {
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('top-up-section').style.display = 'block';
+                showAlert('Selamat datang di Diamond Nexus!', 'success');
+            } else {
+                showAlert('Mohon masukkan nama pengguna dan kata sandi', 'error');
+            }
+        }
+
+        function addBalance() {
+            const amount = parseInt(document.getElementById('add-balance-amount').value);
+            if (amount && amount >= 10000) {
+                simulateLoading(() => {
+                    balance += amount;
+                    document.getElementById('balance').textContent = formatRupiah(balance);
+                    showAlert(`Berhasil mengisi saldo sebesar ${formatRupiah(amount)}`, 'success');
+                });
+            } else {
+                showAlert('Mohon masukkan jumlah yang valid (minimal Rp 10.000)', 'error');
+            }
+        }
+
+        function updateGameList() {
+            const platform = document.getElementById('platform-select').value;
+            const gameList = document.getElementById('game-list');
+            gameList.innerHTML = '';
+            
+            const games = platform === 'steam' ? steamGames : playstoreGames;
+            games.forEach(game => {
+                const gameItem = document.createElement('div');
+                gameItem.className = 'game-item';
+                gameItem.innerHTML = `
+                    <img src="${game.image}" alt="${game.name}">
+                    <p>${game.name}</p>
+                `;
+                gameItem.onclick = () => selectGame(game.name);
+                gameList.appendChild(gameItem);
+            });
+        }
+
+        function selectGame(gameName) {
+            document.getElementById('selected-game').textContent = gameName;
+            document.getElementById('purchase-form').style.display = 'block';
+        }
+
+        document.getElementById('platform-select').addEventListener('change', updateGameList);
+
+        function calculatePrice(amount) {
+            // Harga dasar: Rp 1.500 per diamond
+            let price = amount * 1500;
+            // Diskon untuk pembelian dalam jumlah besar
+            if (amount >= 100) price *= 0.9;
+            if (amount >= 500) price *= 0.85;
+            if (amount >= 1000) price *= 0.8;
+            return Math.round(price);
+        }
+
+        document.getElementById('diamond-amount').addEventListener('input', function() {
+            const amount = parseInt(this.value);
+            const price = calculatePrice(amount);
+            document.getElementById('price').textContent = formatRupiah(price);
+        });
+
+        function buyDiamond() {
+            const game = document.getElementById('selected-game').textContent;
+            const amount = parseInt(document.getElementById('diamond-amount').value);
+            const price = calculatePrice(amount);
+            
+            if (!game || !amount) {
+                showAlert('Mohon pilih game dan masukkan jumlah diamond', 'error');
+                return;
+            }
+            
+            if (price > balance) {
+                showAlert('Saldo tidak mencukupi! Silakan isi ulang saldo Anda.', 'error');
+                return;
+            }
+            
+            simulateLoading(() => {
+                balance -= price;
+                document.getElementById('balance').textContent = formatRupiah(balance);
+                showAlert(`Berhasil membeli ${amount} diamond untuk ${game}. Saldo baru: ${formatRupiah(balance)}`, 'success');
+            });
+        }
+
+        function showAlert(message, type = 'error') {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.style.display = 'block';
+            alert.className = `alert ${type}`;
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        function formatRupiah(amount) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(amount);
+        }
+
+        function simulateLoading(callback) {
+            document.getElementById('loading').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+                callback();
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
+
+
+
+
